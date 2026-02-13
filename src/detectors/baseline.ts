@@ -1,3 +1,4 @@
+import { regex } from "../helper/REGEX.js";
 export type ScanCounts = Record<string, number>;
 // to tell how many time the Exp appears
 function countRegexMatches(text: string, re: RegExp): number {
@@ -60,26 +61,21 @@ function countCreditCards(text: string): number {
 export function scanBaseline(text: string, customTerms: string[]): ScanCounts {
   const counts: ScanCounts = {};
 
-  // Email (practical, not perfect)
-  counts.email = countRegexMatches(
-    text,
-    /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi,
-  );
+  // Email
+  counts.email = countRegexMatches(text, regex.email);
 
-  // URLs (basic)
-  counts.url = countRegexMatches(text, /\b(?:https?:\/\/|www\.)[^\s)]+/gi);
+  // URLs-basic
+  counts.url = countRegexMatches(text, regex.url);
 
   // IPv4
-  counts.ipv4 = countRegexMatches(
-    text,
-    /\b(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)\b/g,
-  );
+  counts.ipv4 = countRegexMatches(text, regex.ipv4);
 
-  // Phone-ish (will be refined later)
-  counts.phone = countRegexMatches(text, /\b\+?\d[\d\s().-]{7,}\d\b/g);
+  // Phone-NL
+  counts.phone = countRegexMatches(text, regex.phone);
 
-  // IBAN-ish (structure only for scan)
-  counts.iban = countRegexMatches(text, /\b[A-Z]{2}\d{2}[A-Z0-9]{11,30}\b/g);
+  // IBAN-REGEXg;
+
+  counts.iban = countRegexMatches(text, regex.iban);
 
   // Credit cards (Luhn)
   counts.creditcard = countCreditCards(text);
