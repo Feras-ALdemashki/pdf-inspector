@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { Command } from "commander";
+import { runScan } from "./commands/scan.js";
 
 const program = new Command();
 
@@ -10,41 +11,29 @@ program
 
 program
   .command("scan")
-  .argument("<path>", "PDF file or directory")
+  .argument("<path>", "PDF file")
+  .option("--add-term <term...>", "Add custom term(s) to redact")
+  .option("--add-terms-file <path>", "File with one custom term per line")
   .description(
     "Scan input and print what would be redacted (no output written)",
   )
-  .action((path) => {
-    console.log(`scan: ${path}`);
-    console.log("Not implemented yet.");
-    process.exitCode = 0;
+  .action(async (p, options) => {
+    await runScan(p, options);
   });
 
 program
   .command("run")
-  .argument("<path>", "PDF file or directory")
-  .option("--out <path>", "Output file or directory")
-  .option("--add-term <term...>", "Add custom term(s) to redact")
-  .option("--add-terms-file <path>", "File with one custom term per line")
-  .option("--dry-run", "Scan only; do not write output")
-  .description("Run scan → redact → verify and write outputs")
-  .action((path, options) => {
-    console.log(`run: ${path}`);
-    console.log("options:", options);
+  .argument("<path>")
+  .description("Run scan → redact → verify")
+  .action(() => {
     console.log("Not implemented yet.");
-    process.exitCode = 0;
   });
-
 program
   .command("verify")
-  .argument("<path>", "Redacted PDF file")
-  .option("--report <path>", "Write verification report JSON")
-  .description("Verify that the output matches v1 guarantees")
-  .action((path, options) => {
-    console.log(`verify: ${path}`);
-    console.log("options:", options);
+  .argument("<path>")
+  .description("Verify a redacted PDF")
+  .action(() => {
     console.log("Not implemented yet.");
-    process.exitCode = 0;
   });
 
-program.parse();
+await program.parseAsync(process.argv);

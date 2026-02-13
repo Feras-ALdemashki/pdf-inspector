@@ -1,0 +1,9 @@
+export const regex = {
+  email: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi,
+  url: /\b(?:https?:\/\/|www\.)[^\s)]+/gi,
+  ipv4: /\b(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)\b/g,
+  phone: /^\(?([+]31|0031|0)-?6(\s?|-)([0-9]\s{0,3}){8}$/,
+  iban: /\b[A-Z]{2}\d{2}(?:[\s\u00A0-]?[A-Z0-9]){11,30}\b/g,
+} as const;
+
+export type RegexKey = keyof typeof regex;
