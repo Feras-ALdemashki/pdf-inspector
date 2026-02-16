@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import { runScan } from "./commands/scan.js";
-
 const program = new Command();
 
 program

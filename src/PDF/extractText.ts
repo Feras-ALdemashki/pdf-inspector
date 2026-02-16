@@ -1,57 +1,88 @@
 import fs from "node:fs/promises";
-import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
-// the final object type that the function will return
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+
 export type ExtractTextResult = {
   filePath: string;
   numPages: number;
   totalTextItems: number;
   text: string;
 };
-// main function to extract text
+
 export async function extractPdfText(
   filePath: string,
 ): Promise<ExtractTextResult> {
-  // converting the text into bytes
   const data = new Uint8Array(await fs.readFile(filePath));
 
-  const loadingTask = getDocument({
-    data,
-  });
-
+  const loadingTask = pdfjsLib.getDocument({ data });
   const pdf = await loadingTask.promise;
-  // the number of pages for the pdf file
+
   const numPages = pdf.numPages;
-  // to track and debug if the extraction work or its an empty file
   let totalTextItems = 0;
-  //collecting the str from each text item
   const parts: string[] = [];
 
   try {
-    // loop into every page to get the text content and then navigate to items to get the string value
     for (let pageNum = 1; pageNum <= numPages; pageNum++) {
       const page = await pdf.getPage(pageNum);
+      const viewport = page.getViewport({ scale: 1 });
+
       const tc = await page.getTextContent();
-      //avoid crashing while iterating in case value is null or undefined
-      // using as any [] , it should most of the time return str but some cased it return beginMarkedContent as an image
       const items = (tc.items ?? []) as any[];
-      // increasing the total text items for each item
+      const styles = (tc.styles ?? {}) as Record<string, any>;
+
       totalTextItems += items.length;
 
-      for (const it of items) {
-        //check if there is an item and the string value is actually a string
-        if (it && typeof it.str === "string") {
-          // trim remove white spaces from the string
-          const s = it.str.trim();
-          // check after removing the white spaces if there is text left and push it to parts to have the full text
-          if (s) parts.push(s);
-        }
+      for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+
+        if (!it || typeof it.str !== "string") continue;
+
+        const s = it.str.trim();
+        if (s) parts.push(s);
+
+        //  Coordinates
+        const pdfX = it.transform?.[4];
+        const pdfY = it.transform?.[5];
+
+        const tx = pdfjsLib.Util.transform(viewport.transform, it.transform);
+        const vx = tx[4];
+        const vy = tx[5];
+
+        const width =
+          (typeof it.width === "number" ? it.width : 0) * viewport.scale;
+
+        //  Font info
+        const fontId = it.fontName as string | undefined;
+        const style = fontId && styles[fontId] ? styles[fontId] : undefined;
+
+        const fontSize = Math.hypot(tx[2], tx[3]);
+        const height = fontSize;
+
+        console.log({
+          page: pageNum,
+          itemIndex: i,
+          text: s,
+
+          pdf: { x: pdfX, y: pdfY },
+          viewport: { x: vx, y: vy, width, height },
+
+          font: {
+            id: fontId,
+            family: style?.fontFamily,
+            ascent: style?.ascent,
+            descent: style?.descent,
+            vertical: style?.vertical,
+            estimatedSize: fontSize,
+          },
+
+          dir: it.dir,
+          hasEOL: it.hasEOL,
+        });
       }
     }
   } finally {
-    // make sure clean up always happen in case the loop failed or succeeds, to save memory usage
     await pdf.destroy();
     await loadingTask.destroy();
   }
-  // it should return the object with the details , break each part into its own line
+
   return { filePath, numPages, totalTextItems, text: parts.join("\n") };
 }
