@@ -2,7 +2,8 @@
 
 A local CLI that scans a PDF from a local file path for sensitive information using a policy-driven set of checks, then prints a report with match types and counts. (V1: text-based PDFs)
 
-<img width="1040" height="720" alt="Screenshot 2026-02-20 151637" src="https://github.com/user-attachments/assets/c99e955d-a178-4e5f-8b8e-3ed1e210f949" />
+<img width="1030" height="686" alt="Screenshot 2026-02-20 154521" src="https://github.com/user-attachments/assets/457d5e2e-2ed1-472c-9c2c-5a69cd6ec579" />
+
 
 
 ## Why
