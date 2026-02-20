@@ -18,13 +18,10 @@
   },
   "description": "",
   "dependencies": {
-    "@napi-rs/canvas": "^0.1.92",
     "commander": "^14.0.3",
-    "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.4.624",
     "picocolors": "^1.1.1",
-    "string-width": "^8.1.1",
-    "zod": "^4.3.6"
+    "string-width": "^8.1.1"
   },
   "devDependencies": {
     "@types/node": "^25.2.1",

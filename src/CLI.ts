@@ -20,19 +20,4 @@ program
     await runScan(p, options);
   });
 
-program
-  .command("run")
-  .argument("<path>")
-  .description("Run scan → redact → verify")
-  .action(() => {
-    console.log("Not implemented yet.");
-  });
-program
-  .command("verify")
-  .argument("<path>")
-  .description("Verify a redacted PDF")
-  .action(() => {
-    console.log("Not implemented yet.");
-  });
-
 await program.parseAsync(process.argv);
