@@ -5,7 +5,9 @@ const program = new Command();
 
 program
   .name("redact")
-  .description("Local-first PDF redaction CLI (v1: text-based PDFs)")
+  .description(
+    "Local-first PDF Sensitive Data Detection  CLI (v1: text-based PDFs)",
+  )
   .version("0.1.0");
 
 program
@@ -14,7 +16,7 @@ program
   .option("--add-term <term...>", "Add custom term(s) to redact")
   .option("--add-terms-file <path>", "File with one custom term per line")
   .description(
-    "Scan input and print what would be redacted (no output written)",
+    "Scan input and print Sensitive Data Detection Report (no output written)",
   )
   .action(async (p, options) => {
     await runScan(p, options);
