@@ -73,7 +73,7 @@ export async function runScan(
   const keyWidth = Math.max(0, ...entries.map(([k]) => k.length));
 
   log(
-    "Potential redactions (counts):",
+    "Sensitive Data Detection Report (counts):",
     ...entries.map(([k, v]) => `- ${k.padEnd(keyWidth)} : ${v}`),
   );
 
