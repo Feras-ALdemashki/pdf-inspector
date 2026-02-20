@@ -1,5 +1,5 @@
 {
-  "name": "local-pdf-redactor-cli",
+  "name": "pdf-inspector",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
